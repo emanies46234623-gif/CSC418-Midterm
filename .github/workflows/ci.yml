@@ -1,5 +1,5 @@
 
-name: Assignment Portal CI and Conditional Pages
+name: Assignment Portal CI, Email, and Pages
 
 on:
   push:
@@ -12,25 +12,25 @@ permissions:
 
 jobs:
   automated-tests:
-    name: Run Tests and Send JSON Report
+    name: Run Tests and Save JSON Report
     runs-on: self-hosted
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24
 
-      - name: Run tests and deliver report
+      - name: Run tests and deliver local report
         env:
           REPORT_URL: http://127.0.0.1:4000/report
           REPORT_TOKEN: ${{ secrets.REPORT_TOKEN }}
         run: node run-tests.js
 
-      - name: Save JSON report artifact
+      - name: Upload JSON report
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -38,6 +38,84 @@ jobs:
           path: test-report.json
           if-no-files-found: warn
           retention-days: 14
+
+  email-report:
+    name: Email Test Report
+    needs: automated-tests
+    if: always() && needs.automated-tests.result != 'cancelled'
+    runs-on: ubuntu-latest
+
+    permissions:
+      actions: read
+      contents: read
+
+    steps:
+      - name: Download JSON report
+        uses: actions/download-artifact@v4
+        with:
+          name: test-report-${{ github.run_id }}
+          path: report
+
+      - name: Prepare email summary
+        id: summary
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          const report = JSON.parse(
+            fs.readFileSync('report/test-report.json', 'utf8')
+          );
+
+          const tests = Array.isArray(report.tests) ? report.tests : [];
+
+          const lines = [
+            'CSC418 Assignment Portal - Automated Test Report',
+            '',
+            `Repository: ${report.repository}`,
+            `Branch: ${report.branch}`,
+            `Commit: ${report.commitSha}`,
+            `Workflow run ID: ${report.pipelineRunId}`,
+            `Execution timestamp: ${report.executionTimestamp}`,
+            `Overall status: ${String(report.overallStatus).toUpperCase()}`,
+            `Total tests: ${report.counts.total}`,
+            `Passed: ${report.counts.passed}`,
+            `Failed: ${report.counts.failed}`,
+            '',
+            'Individual test results:',
+            ...tests.map(test =>
+              `- ${String(test.result).toUpperCase()}: ${test.name}` +
+              (test.failureMessage ? ` — ${test.failureMessage}` : '')
+            ),
+            '',
+            'The complete JSON test report is attached.'
+          ];
+
+          fs.writeFileSync(
+            'report/email-body.txt',
+            lines.join('\n') + '\n',
+            'utf8'
+          );
+
+          fs.appendFileSync(
+            process.env.GITHUB_OUTPUT,
+            `status=${report.overallStatus}\n`
+          );
+          NODE
+
+      - name: Send email with JSON report attached
+        uses: dawidd6/action-send-mail@v23
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: 465
+          secure: true
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          from: ${{ secrets.MAIL_FROM }}
+          to: ${{ secrets.REPORT_EMAIL_TO }}
+          subject: '[CSC418] Test Report - ${{ steps.summary.outputs.status }} - Run #${{ github.run_number }}'
+          body: file://report/email-body.txt
+          attachments: report/test-report.json
 
   pages-build:
     name: Prepare GitHub Pages
@@ -47,7 +125,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
@@ -58,7 +136,7 @@ jobs:
           path: pages
 
   pages-deploy:
-    name: Deploy static frontend
+    name: Deploy Static Frontend
     needs: pages-build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
