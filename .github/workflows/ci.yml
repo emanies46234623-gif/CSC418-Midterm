@@ -1,11 +1,8 @@
 
-name: Assignment Portal CI
+name: Assignment Portal CI and JSON Report
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
     branches:
       - main
   workflow_dispatch:
@@ -15,8 +12,8 @@ permissions:
 
 jobs:
   automated-tests:
-    name: Run Assignment Tests
-    runs-on: ubuntu-latest
+    name: Run Tests and Send JSON Report
+    runs-on: self-hosted
 
     steps:
       - name: Checkout repository
@@ -27,5 +24,8 @@ jobs:
         with:
           node-version: 24
 
-      - name: Run automated tests
-        run: npm test
+      - name: Run tests and deliver report
+        env:
+          REPORT_URL: http://127.0.0.1:4000/report
+          REPORT_TOKEN: ${{ secrets.REPORT_TOKEN }}
+        run: node run-tests.js
