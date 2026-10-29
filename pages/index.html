@@ -1,0 +1,450 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#14213d">
+<title>Submitly | Assignment Portal Demo</title>
+
+<style>
+:root {
+    --navy: #14213d;
+    --blue: #4965e8;
+    --background: #f4f6fb;
+    --ink: #25314b;
+    --muted: #7c879e;
+    --border: #e5e9f2;
+    --green: #15803d;
+}
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    background: var(--background);
+    color: var(--ink);
+    font: 14px/1.6 "Segoe UI", Arial, sans-serif;
+}
+header {
+    padding: 18px 5%;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--navy);
+    font-size: 21px;
+    font-weight: 800;
+}
+.logo {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--blue);
+    color: white;
+    font-size: 22px;
+}
+.tag {
+    padding: 6px 11px;
+    color: #4053c2;
+    background: #eef1ff;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+main {
+    width: min(1120px, 92%);
+    margin: 35px auto;
+}
+.hero {
+    padding: 31px;
+    color: white;
+    border-radius: 17px;
+    background: linear-gradient(120deg, #14213d, #344db5, #586fea);
+}
+.eyebrow {
+    color: #cbd5ff;
+    font-size: 10px;
+    letter-spacing: 1.8px;
+    font-weight: 800;
+}
+h1 {
+    margin: 8px 0;
+    font-size: clamp(27px, 4vw, 38px);
+    letter-spacing: -1px;
+    line-height: 1.2;
+}
+.hero p {
+    max-width: 600px;
+    color: #e1e7ff;
+    margin-bottom: 0;
+}
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 20px 0;
+}
+.stat, .card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    box-shadow: 0 6px 24px #17234408;
+}
+.stat { padding: 18px; }
+.stat span {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+}
+.stat strong {
+    display: block;
+    color: var(--navy);
+    font-size: 25px;
+}
+.grid {
+    display: grid;
+    grid-template-columns: minmax(280px, .85fr) minmax(0, 1.15fr);
+    gap: 18px;
+    align-items: start;
+}
+.card { overflow: hidden; }
+.card-head {
+    padding: 19px 21px;
+    border-bottom: 1px solid var(--border);
+}
+.card-head h2 {
+    margin: 0;
+    color: var(--navy);
+    font-size: 16px;
+}
+.card-head p {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 11px;
+}
+.form-body { padding: 20px; }
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 700;
+}
+.field { margin-bottom: 15px; }
+input {
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 11px;
+    border: 1px solid #dce2ee;
+    border-radius: 8px;
+    outline: none;
+    font: inherit;
+    font-size: 12px;
+}
+input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px #4965e820;
+}
+button {
+    padding: 12px 16px;
+    border: 0;
+    border-radius: 8px;
+    color: white;
+    background: var(--blue);
+    font-weight: 700;
+    cursor: pointer;
+}
+button:hover { background: #354fd0; }
+.submit { width: 100%; }
+.message {
+    margin-bottom: 14px;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+.success { background: #ecfdf3; color: #166534; }
+.error { background: #fff0f2; color: #a61b36; }
+.table-wrap { overflow-x: auto; }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+th {
+    background: #f9faff;
+    color: var(--muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+}
+td { font-size: 11px; overflow-wrap: anywhere; }
+a { color: var(--blue); font-weight: 700; }
+.empty {
+    padding: 35px 15px;
+    color: var(--muted);
+    text-align: center;
+    font-size: 12px;
+}
+.note {
+    margin-top: 17px;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.7;
+}
+footer {
+    padding: 22px 0;
+    color: var(--muted);
+    font-size: 10px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+@media(max-width:760px) {
+    .grid { grid-template-columns: 1fr; }
+    .stats { gap: 8px; }
+    .stat { padding: 12px; }
+    .stat strong { font-size: 21px; }
+    .hero { padding: 23px; }
+}
+@media(max-width:470px) {
+    .stats { grid-template-columns: 1fr; }
+    header { padding: 14px 4%; }
+}
+</style>
+</head>
+
+<body>
+<header>
+    <div class="brand">
+        <span class="logo">S</span>
+        <span>Submitly</span>
+    </div>
+    <span class="tag">Static Demo</span>
+</header>
+
+<main>
+    <section class="hero">
+        <div class="eyebrow">CSC418 · DEVOPS LAB MIDTERM</div>
+        <h1>Assignment Submission Portal</h1>
+        <p>
+            A clean student workspace for submitting assignment links,
+            checking required information, and reviewing saved demo records.
+        </p>
+    </section>
+
+    <section class="stats" aria-label="Submission statistics">
+        <div class="stat">
+            <span>Total submissions</span>
+            <strong id="total">0</strong>
+        </div>
+        <div class="stat">
+            <span>Unique students</span>
+            <strong id="students">0</strong>
+        </div>
+        <div class="stat">
+            <span>Demo status</span>
+            <strong style="font-size:19px">Active</strong>
+        </div>
+    </section>
+
+    <section class="grid">
+        <article class="card">
+            <div class="card-head">
+                <h2>Submit an assignment</h2>
+                <p>Complete all four fields to add a demo record.</p>
+            </div>
+            <div class="form-body">
+                <div id="message" role="status" aria-live="polite"></div>
+                <form id="submission-form">
+                    <div class="field">
+                        <label for="name">Student full name *</label>
+                        <input id="name" name="name" maxlength="120"
+                               placeholder="e.g. Aisha Khan" required>
+                    </div>
+                    <div class="field">
+                        <label for="registration">Registration number *</label>
+                        <input id="registration" name="registration"
+                               maxlength="60" placeholder="e.g. FA24-BSE-017"
+                               required>
+                    </div>
+                    <div class="field">
+                        <label for="title">Assignment title *</label>
+                        <input id="title" name="title" maxlength="200"
+                               placeholder="Enter assignment title" required>
+                    </div>
+                    <div class="field">
+                        <label for="url">Submission URL *</label>
+                        <input id="url" name="url" type="url" maxlength="2048"
+                               placeholder="https://github.com/username/project"
+                               required>
+                    </div>
+                    <button class="submit" type="submit">
+                        Add demo submission →
+                    </button>
+                </form>
+                <p class="note">
+                    Demo limitation: GitHub Pages hosts static files.
+                    Records entered here are saved only in this browser using
+                    local storage. They are not sent to the Node.js server or
+                    shared with other visitors.
+                </p>
+            </div>
+        </article>
+
+        <article class="card">
+            <div class="card-head">
+                <h2>Submission records</h2>
+                <p>Records saved in this browser.</p>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Assignment</th>
+                            <th>Link</th>
+                        </tr>
+                    </thead>
+                    <tbody id="records"></tbody>
+                </table>
+                <div class="empty" id="empty">
+                    No demo submissions yet. Use the form to add one.
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <footer>
+        <span>Submitly · CSC418 DevOps Lab Midterm</span>
+        <span>Static demo for conditional deployment</span>
+    </footer>
+</main>
+
+<script>
+(() => {
+    const storageKey = 'submitly-csc418-static-demo';
+    const form = document.getElementById('submission-form');
+    const message = document.getElementById('message');
+    const recordsBody = document.getElementById('records');
+    const empty = document.getElementById('empty');
+
+    let records = [];
+    try {
+        const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        if (Array.isArray(saved)) records = saved;
+    } catch {
+        records = [];
+    }
+
+    function showMessage(text, type) {
+        message.textContent = text;
+        message.className = 'message ' + type;
+    }
+
+    function addCell(row, text) {
+        const cell = document.createElement('td');
+        cell.textContent = text;
+        row.appendChild(cell);
+        return cell;
+    }
+
+    function render() {
+        recordsBody.replaceChildren();
+
+        records.slice().reverse().forEach(record => {
+            const row = document.createElement('tr');
+            const studentCell = addCell(row, '');
+            const studentName = document.createElement('strong');
+            studentName.textContent = record.name;
+            const reg = document.createElement('div');
+            reg.textContent = record.registration;
+            reg.style.color = '#7c879e';
+            reg.style.marginTop = '4px';
+            studentCell.append(studentName, reg);
+
+            addCell(row, record.title);
+
+            const linkCell = document.createElement('td');
+            const link = document.createElement('a');
+            link.href = record.url;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.textContent = 'Open ↗';
+            linkCell.appendChild(link);
+            row.appendChild(linkCell);
+
+            recordsBody.appendChild(row);
+        });
+
+        empty.hidden = records.length !== 0;
+        document.getElementById('total').textContent = records.length;
+        document.getElementById('students').textContent =
+            new Set(records.map(record => record.registration.toLowerCase())).size;
+    }
+
+    form.addEventListener('submit', event => {
+        event.preventDefault();
+
+        if (!form.reportValidity()) return;
+
+        const name = form.elements.name.value.trim();
+        const registration = form.elements.registration.value.trim();
+        const title = form.elements.title.value.trim();
+        const url = form.elements.url.value.trim();
+
+        let parsed;
+        try {
+            parsed = new URL(url);
+        } catch {
+            showMessage('Please enter a valid URL.', 'error');
+            return;
+        }
+
+        if (
+            !['http:', 'https:'].includes(parsed.protocol) ||
+            !parsed.hostname.includes('.')
+        ) {
+            showMessage('Use a valid HTTP or HTTPS URL.', 'error');
+            return;
+        }
+
+        records.push({
+            name,
+            registration,
+            title,
+            url,
+            submittedAt: new Date().toISOString()
+        });
+
+        try {
+            localStorage.setItem(storageKey, JSON.stringify(records));
+        } catch {
+            records.pop();
+            showMessage('Browser storage is unavailable. Record not saved.', 'error');
+            return;
+        }
+
+        form.reset();
+        render();
+        showMessage('Demo submission saved in this browser.', 'success');
+    });
+
+    render();
+})();
+</script>
+</body>
+</html>
