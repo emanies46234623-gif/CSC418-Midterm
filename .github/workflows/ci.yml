@@ -1,5 +1,5 @@
 
-name: Assignment Portal CI and JSON Report
+name: Assignment Portal CI and Conditional Pages
 
 on:
   push:
@@ -29,3 +29,50 @@ jobs:
           REPORT_URL: http://127.0.0.1:4000/report
           REPORT_TOKEN: ${{ secrets.REPORT_TOKEN }}
         run: node run-tests.js
+
+      - name: Save JSON report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report-${{ github.run_id }}
+          path: test-report.json
+          if-no-files-found: warn
+          retention-days: 14
+
+  pages-build:
+    name: Prepare GitHub Pages
+    needs: automated-tests
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload static frontend
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: pages
+
+  pages-deploy:
+    name: Deploy static frontend
+    needs: pages-build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
