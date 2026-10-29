@@ -44,7 +44,7 @@ function validateSubmission(data = {}) {
     }
 
     if (!submission.registrationNumber) {
-        errors.push('Registration number is required.');
+        // TEMPORARY DEMO DEFECT: registration validation disabled
     } else if (submission.registrationNumber.length > 60) {
         errors.push('Registration number must be 60 characters or fewer.');
     }
