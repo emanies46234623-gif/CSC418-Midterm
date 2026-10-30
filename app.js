@@ -14,14 +14,6 @@ const MAX_BODY_SIZE = 100_000;
 fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(DATA_FILE)) fs.writeFileSync(DATA_FILE, '[]', 'utf8');
 
-function getSubmissions() {
-    try {
-        const records = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
-        return Array.isArray(records) ? records : [];
-    } catch {
-        return [];
-    }
-}
 
 function saveSubmissions(records) {
     fs.writeFileSync(DATA_FILE, JSON.stringify(records, null, 2), 'utf8');
