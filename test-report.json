@@ -1,0 +1,30 @@
+{
+  "repository": "emanies46234623-gif/CSC418-Midterm",
+  "branch": "main",
+  "commitSha": "f7a39919f2bd05056fdd22c6fd253bbb826fb7a4",
+  "pipelineRunId": "41025812876",
+  "executionTimestamp": "2026-10-30T08:21:19.055Z",
+  "tests": [
+    {
+      "name": "Valid submission is saved and displayed",
+      "result": "passed",
+      "failureMessage": null
+    },
+    {
+      "name": "Missing registration number is rejected",
+      "result": "passed",
+      "failureMessage": null
+    },
+    {
+      "name": "Invalid submission URL is rejected and not saved",
+      "result": "passed",
+      "failureMessage": null
+    }
+  ],
+  "counts": {
+    "total": 3,
+    "passed": 3,
+    "failed": 0
+  },
+  "overallStatus": "passed"
+}
